@@ -1,0 +1,19 @@
+{
+  "name": "unsplash-mixmax-slash-command",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blackbetty/unsplash-mixmax-slash-command.git"
+  },
+  "author": "Dan Golant",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blackbetty/unsplash-mixmax-slash-command/issues"
+  },
+  "homepage": "https://github.com/blackbetty/unsplash-mixmax-slash-command#readme"
+}
