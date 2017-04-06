@@ -1,18 +1,14 @@
 require('dotenv').config();
-var express = require('express');
-var bodyParser = require('body-parser');
 var request = require('request');
-var sync = require('synchronize');
-var _ = require('underscore')
-var app = express();
+var _ = require('underscore');
 var Handlebars = require('handlebars');
 var fs = require('file-system');
 
 
 // our typeahead output template
-var photoTemplate = Handlebars.compile(fs.readFileSync(__dirname + '/../templates/typeahead-template.handlebars', { encoding: 'UTF-8' }))
+var photoTemplate = Handlebars.compile(fs.readFileSync(__dirname + '/../templates/typeahead-template.handlebars', { encoding: 'UTF-8' }));
 
-function fetchPhotos(searchTerm, callback) {
+function fetchPhotos (searchTerm, callback) {
     request({
         url: 'https://api.unsplash.com/search/photos/',
         qs: {
@@ -24,7 +20,7 @@ function fetchPhotos(searchTerm, callback) {
 
 
 
-function buildResponse(photoObject) {
+function buildResponse (photoObject) {
 
     // Get all the fields we need to fill the template
     var thumbnail_url = photoObject.urls.thumb;
@@ -32,9 +28,9 @@ function buildResponse(photoObject) {
     var user_name = photoObject.user.name;
     var photo_categories = 'No category listed';
 
-    //Categories is occasionally null or not null  but still empty
+    // Categories is occasionally null or not null  but still empty
     if (photoObject.categories && photoObject.categories[0] && photoObject.categories[0].title) {
-        var photo_categories = _.map(photoObject.categories, function(category) {
+        photo_categories = _.map(photoObject.categories, function (category) {
             return category.title;
         }).join(', ');
     }
@@ -54,10 +50,10 @@ function buildResponse(photoObject) {
     };
 }
 
-module.exports = function(req, res, callback) {
+module.exports = function (req, res, callback) {
 
-	// If, somehow, an null search term is passed, we can treat it as empty
-    searchTerm = req.query && req.query.text ? req.query.text : '';
+    // If, somehow, an null search term is passed, we can treat it as empty
+    var searchTerm = req.query && req.query.text ? req.query.text : '';
     res.statusCode = 200;
 
     // If the term is blank or whitespace, we assume that the user just hasn't typed
@@ -68,20 +64,19 @@ module.exports = function(req, res, callback) {
         }];
         callback(res);
     } else {
-        fetchPhotos(searchTerm, function(error, response, body) {
+        fetchPhotos(searchTerm, function (error, response, body) {
             body = JSON.parse(body);
             if (error) {
-                console.log('Error occurred while finding photos: ' + error);
-                res.statusCode = 500
+                res.statusCode = 500;
                 res.body = [{
-                    title: 'There was an error fetching photos',
+                    title: 'There was an error fetching photos: ' + error,
                     text: ''
-                }]
+                }];
             } else {
-            	// Build our list of photo objects
+                // Build our list of photo objects
                 if (body.results && body.results.length > 0) {
-                    photos = _.map(body.results, function(result) {
-                        return buildResponse(result)
+                    var photos = _.map(body.results, function (result) {
+                        return buildResponse(result);
                     });
                     res.body = photos;
                 } else {
@@ -94,4 +89,4 @@ module.exports = function(req, res, callback) {
             callback(res);
         });
     }
-}
+};

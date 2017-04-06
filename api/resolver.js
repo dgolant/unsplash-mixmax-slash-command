@@ -4,9 +4,9 @@ var fs = require('file-system');
 
 
 // our resolver output template
-var photoTemplate = Handlebars.compile(fs.readFileSync(__dirname + '/../templates/resolver-template.handlebars', { encoding: 'UTF-8' }))
+var photoTemplate = Handlebars.compile(fs.readFileSync(__dirname + '/../templates/resolver-template.handlebars', { encoding: 'UTF-8' }));
 
-function buildResponse(url) {
+function buildResponse (url) {
     var values = { image_url: url };
     var html = photoTemplate(values);
 
@@ -14,7 +14,7 @@ function buildResponse(url) {
 }
 
 
-module.exports = function(photoURL) {
-	// Since we already have our image URL, we are just using this for styling
-	return buildResponse(photoURL);
-}
+module.exports = function (photoURL) {
+    // Since we already have our image URL, we are just using this for styling
+    return buildResponse(photoURL);
+};
