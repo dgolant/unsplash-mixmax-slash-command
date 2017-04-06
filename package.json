@@ -1,7 +1,7 @@
 {
   "name": "unsplash-mixmax-slash-command",
   "version": "1.0.0",
-  "description": "A slash command that returns an unsplash image",
+  "description": "A slash command that searches and returns an image from Unsplash.com",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/blackbetty/unsplash-mixmax-slash-command.git"
   },
-  "author": "Dan Golant",
+  "author": "Dan Golant (with acknowledgments to the MixMax team)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/blackbetty/unsplash-mixmax-slash-command/issues"
