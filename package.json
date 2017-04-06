@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/blackbetty/unsplash-mixmax-slash-command.git"
   },
-  "author": "Dan Golant (with acknowledgments to the MixMax team)",
+  "author": "Dan Golant (with acknowledgments to the Mixmax team)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/blackbetty/unsplash-mixmax-slash-command/issues"
