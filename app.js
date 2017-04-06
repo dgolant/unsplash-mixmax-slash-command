@@ -18,6 +18,7 @@ app.use(function(req, res, next) {
     next();
 });
 
+
 app.get('/typeahead', function(req, res, next) {
     typeahead(req, res, function(res) {
         if (res.statusCode != 200 || !res.body) {
@@ -28,17 +29,10 @@ app.get('/typeahead', function(req, res, next) {
 });
 
 
-
 app.get('/resolver', function(req, res, next) {
-    console.log(req.query);
     res.json({
         body: resolver(req.query.text)
     });
-});
-
-
-app.get('/', function(req, res, next) {
-    res.sendStatus(200);
 });
 
 

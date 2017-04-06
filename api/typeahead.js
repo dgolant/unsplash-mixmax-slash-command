@@ -8,6 +8,8 @@ var app = express();
 var Handlebars = require('handlebars');
 var fs = require('file-system');
 
+
+// our typeahead output template
 var photoTemplate = Handlebars.compile(fs.readFileSync(__dirname + '/../templates/typeahead-template.handlebars', { encoding: 'UTF-8' }))
 
 function fetchPhotos(searchTerm, callback) {
@@ -23,16 +25,27 @@ function fetchPhotos(searchTerm, callback) {
 
 
 function buildResponse(photoObject) {
+
+    // Get all the fields we need to fill the template
     var thumbnail_url = photoObject.urls.thumb;
     var user_url = photoObject.user.links.html;
     var user_name = photoObject.user.name;
     var photo_categories = 'No category listed';
+
+    //Categories is occasionally null or not null  but still empty
     if (photoObject.categories && photoObject.categories[0] && photoObject.categories[0].title) {
         var photo_categories = _.map(photoObject.categories, function(category) {
             return category.title;
         }).join(', ');
     }
-    var values = { thumbnail_url: thumbnail_url, userprofile_url: user_url, username: user_name, category: photo_categories };
+
+    // build our template
+    var values = {
+        thumbnail_url: thumbnail_url,
+        userprofile_url: user_url,
+        username: user_name,
+        category: photo_categories
+    };
     var html = photoTemplate(values);
 
     return {
@@ -42,8 +55,12 @@ function buildResponse(photoObject) {
 }
 
 module.exports = function(req, res, callback) {
+
+	// If, somehow, an null search term is passed, we can treat it as empty
     searchTerm = req.query && req.query.text ? req.query.text : '';
     res.statusCode = 200;
+
+    // If the term is blank or whitespace, we assume that the user just hasn't typed
     if (searchTerm.trim() == '') {
         res.body = [{
             title: '<i>(please enter a search string)</i>',
@@ -61,7 +78,8 @@ module.exports = function(req, res, callback) {
                     text: ''
                 }]
             } else {
-                if (body.results && body.results.length > 1) {
+            	// Build our list of photo objects
+                if (body.results && body.results.length > 0) {
                     photos = _.map(body.results, function(result) {
                         return buildResponse(result)
                     });

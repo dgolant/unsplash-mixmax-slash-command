@@ -1,13 +1,9 @@
 require('dotenv').config();
-var express = require('express');
-var bodyParser = require('body-parser');
-var request = require('request');
-var sync = require('synchronize');
-var _ = require('underscore')
-var app = express();
 var Handlebars = require('handlebars');
 var fs = require('file-system');
 
+
+// our resolver output template
 var photoTemplate = Handlebars.compile(fs.readFileSync(__dirname + '/../templates/resolver-template.handlebars', { encoding: 'UTF-8' }))
 
 function buildResponse(url) {
@@ -19,5 +15,6 @@ function buildResponse(url) {
 
 
 module.exports = function(photoURL) {
+	// Since we already have our image URL, we are just using this for styling
 	return buildResponse(photoURL);
 }
