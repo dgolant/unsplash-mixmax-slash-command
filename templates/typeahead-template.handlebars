@@ -1,0 +1,31 @@
+<style type="text/css">
+
+img {
+  height: 70px;
+  margin-right: 10px;
+}
+
+.desc {
+  position: relative;
+  margin: 1px;
+}
+
+.container:hover {
+    border-left: 5px solid #3c7de6;
+}
+
+.container {
+	position: relative;
+	left: 0px;
+	padding: 5px;
+	border-left: 5px solid rgba(0,0,0,0);
+}
+</style>
+
+<div class="container">
+    <p><img src="{{thumbnail_url}}"></p>
+    <p class="desc">
+        <b>Category: </b> {{category}}
+        <br> By: <i><a href="{{userprofile_url}}"> {{username}} </a></i>
+    </p>
+</div>

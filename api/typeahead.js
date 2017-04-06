@@ -5,8 +5,10 @@ var request = require('request');
 var sync = require('synchronize');
 var _ = require('underscore')
 var app = express();
+var Handlebars = require('handlebars');
+var fs = require('file-system');
 
-
+var photoTemplate = Handlebars.compile(fs.readFileSync(__dirname + '/../templates/typeahead-template.handlebars', { encoding: 'UTF-8' }))
 
 function fetchPhotos(searchTerm, callback) {
     request({
@@ -20,12 +22,27 @@ function fetchPhotos(searchTerm, callback) {
 
 
 
-function buildHTML() {
-    return '<div><img src="https://images.unsplash.com/photo-1456796148441-485386946471?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&s=fd39246851797e74fbd5f00cd0f3f7ae"><br><b>Category: </b>Nature<br>By: <i><a href="http://unsplash.com/@asiquealam">User</a></i></div>'
+function buildResponse(photoObject) {
+    var thumbnail_url = photoObject.urls.thumb;
+    var user_url = photoObject.user.links.html;
+    var user_name = photoObject.user.name;
+    var photo_categories = 'No category listed';
+    if (photoObject.categories && photoObject.categories[0] && photoObject.categories[0].title) {
+        var photo_categories = _.map(photoObject.categories, function(category) {
+            return category.title;
+        }).join(', ');
+    }
+    var values = { thumbnail_url: thumbnail_url, userprofile_url: user_url, username: user_name, category: photo_categories };
+    var html = photoTemplate(values);
+
+    return {
+        title: html,
+        text: photoObject.urls.small
+    };
 }
 
 module.exports = function(req, res, callback) {
-    searchTerm = req.query.text ? req.query.text : '';
+    searchTerm = req.query && req.query.text ? req.query.text : '';
     res.statusCode = 200;
     if (searchTerm.trim() == '') {
         res.body = [{
@@ -44,15 +61,17 @@ module.exports = function(req, res, callback) {
                     text: ''
                 }]
             } else {
-                console.log(body.results);
-                photos = _.map(body.results, function(result) {
-                    return {
-                        title: buildHTML(),
+                if (body.results && body.results.length > 1) {
+                    photos = _.map(body.results, function(result) {
+                        return buildResponse(result)
+                    });
+                    res.body = photos;
+                } else {
+                    res.body = [{
+                        title: 'No results found',
                         text: ''
-                    };
-                });
-                console.log('photos: ' + photos.length);
-                res.body = photos;
+                    }];
+                }
             }
             callback(res);
         });

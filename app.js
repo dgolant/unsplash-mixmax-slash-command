@@ -3,6 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var sync = require('synchronize');
 var typeahead = require('./api/typeahead');
+var resolver = require('./api/resolver');
 var pem = require('pem');
 var https = require('https');
 
@@ -19,11 +20,9 @@ app.use(function(req, res, next) {
 
 app.get('/typeahead', function(req, res, next) {
     typeahead(req, res, function(res) {
-        console.log('body: ' + JSON.stringify(res.body));
         if (res.statusCode != 200 || !res.body) {
             res.status(500).send('Errors');
         }
-        console.log(res.body)
         res.json(res.body);
     });
 });
@@ -31,7 +30,10 @@ app.get('/typeahead', function(req, res, next) {
 
 
 app.get('/resolver', function(req, res, next) {
-    res.sendStatus(200);
+    console.log(req.query);
+    res.json({
+        body: resolver(req.query.text)
+    });
 });
 
 
